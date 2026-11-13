@@ -1,16 +1,22 @@
 ---
+import { getCollection, render } from 'astro:content';
+const videos = await getCollection('videos');
+const featured = videos.filter(v => v.data.featured).slice(0, 3);
 ---
+<h1>Your one-line pitch</h1>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+{featured.map(async (v) => {
+  const { Content } = await render(v);
+  return (
+    <section>
+      <h2>{v.data.title}</h2>
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${v.data.youtubeId}`}
+        loading="lazy" allowfullscreen width="640" height="360"></iframe>
+      <details>
+        <summary>How I edited this</summary>
+        <Content />
+      </details>
+    </section>
+  );
+})}
