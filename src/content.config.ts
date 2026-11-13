@@ -6,7 +6,7 @@ const videos = defineCollection({
   schema: z.object({
     title: z.string(),
     youtubeId: z.string(),
-    category: z.enum(['talking-head', 'motion-graphics', 'drone']),
+    categories: z.array(z.enum(['talking-head', 'motion-graphics', 'drone'])).min(1),
     featured: z.boolean().default(false),
     tools: z.array(z.string()).default([]),
   }),

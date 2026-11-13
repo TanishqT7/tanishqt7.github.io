@@ -2,21 +2,36 @@
 import { getCollection, render } from 'astro:content';
 const videos = await getCollection('videos');
 const featured = videos.filter(v => v.data.featured).slice(0, 3);
----
-<h1>Your one-line pitch</h1>
 
-{featured.map(async (v) => {
-  const { Content } = await render(v);
+const categories = [
+  { key: 'talking-head', label: 'Talking head' },
+  { key: 'motion-graphics', label: 'Motion graphics' },
+  { key: 'drone', label: 'Drone' },
+];
+---
+<h1>Hire Me</h1>
+
+{categories.map(async (cat) => {
+  const items = videos.filter(v => v.data.categories.includes(cat.key));
+  if (items.length < 1) return null; // hide thin sections
   return (
     <section>
-      <h2>{v.data.title}</h2>
-      <iframe
-        src={`https://www.youtube-nocookie.com/embed/${v.data.youtubeId}`}
-        loading="lazy" allowfullscreen width="640" height="360"></iframe>
-      <details>
-        <summary>How I edited this</summary>
-        <Content />
-      </details>
+      <h2>{cat.label}</h2>
+      {items.map(async (v) => {
+        const { Content } = await render(v);
+        return (
+          <div>
+            <h3>{v.data.title}</h3>
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${v.data.youtubeId}`}
+              loading="lazy" allowfullscreen width="640" height="360"></iframe>
+            <details>
+              <summary>How I edited this</summary>
+              <Content />
+            </details>
+          </div>
+        );
+      })}
     </section>
   );
 })}

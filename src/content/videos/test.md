@@ -1,7 +1,7 @@
 ---
 title: "Moto G37 Power: Past Experience with Present Experience"
 youtubeId: "yA1mLTNlKs4"
-category: "talking-head"
+categories: ["talking-head", "motion-graphics"]
 featured: true
 tools: ["DaVinci Resolve", "Blender"]
 ---
