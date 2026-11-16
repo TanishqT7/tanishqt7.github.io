@@ -7,6 +7,7 @@ const { video } = Astro.props;
 const { Content } = await render(video);
 const { title, youtubeId, tools } = video.data;
 ---
+<!-- Always exactly 4 children (video, title, tools, details): the grid rows depend on it. -->
 <article class="card">
   <div class="frame">
     <!-- Thumbnail only. The real YouTube player loads on click, so the page stays fast. -->
@@ -17,7 +18,8 @@ const { title, youtubeId, tools } = video.data;
   </div>
 
   <h3>{title}</h3>
-  {tools.length > 0 && <ul class="tools">{tools.map((t) => <li>{t}</li>)}</ul>}
+
+  <ul class="tools">{tools.map((t) => <li>{t}</li>)}</ul>
 
   <details>
     <summary>How I edited this</summary>

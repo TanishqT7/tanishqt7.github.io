@@ -10,7 +10,7 @@ const {
 
 // TODO: replace with your real details
 const EMAIL = 'you@example.com';
-const CHANNEL = 'https://www.youtube.com/@4t7k-t7';
+const CHANNEL = 'https://www.youtube.com/@yourchannel';
 
 const videos = await getVideos();
 const navItems = categories.filter((c) => inCategory(videos, c.key).length > 0);
@@ -29,15 +29,27 @@ const home = url('/');
     <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <header class="site-header">
-      <nav class="wrap nav" aria-label="Main">
-        <a class="brand" href={home}>Tanishq Homkar</a>
-        <ul>
-          {navItems.map((c) => <li><a href={`${home}#${c.key}`}>{c.label}</a></li>)}
-          <li><a href={`${home}#contact`}>Contact</a></li>
-        </ul>
-      </nav>
+    <header class="wrap masthead">
+      <div class="id">
+        <strong>Tanishq Homkar</strong>
+        <span>Video editor</span>
+      </div>
+      <!-- Put your photo at public/profile.jpg (square, at least 300x300) -->
+      <a class="avatar" href={home} aria-label="Home">
+        <img src={url('/profile.jpg')} alt="Tanishq Homkar" width="176" height="176" />
+      </a>
+      <a class="id end" href={CHANNEL} rel="noopener" aria-label="4T7K on YouTube">
+        <strong>4T7K</strong>
+        <span>YouTube channel</span>
+      </a>
     </header>
+
+    <nav class="catnav" aria-label="Sections">
+      <ul>
+        {navItems.map((c) => <li><a href={`${home}#${c.key}`}>{c.label}</a></li>)}
+        <li><a href={`${home}#contact`}>Contact</a></li>
+      </ul>
+    </nav>
 
     <main><slot /></main>
 
