@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+import { categories, getVideos, inCategory, url } from '../lib/videos';
+
+interface Props { title?: string; description?: string }
+const {
+  title = 'Tanishq Homkar | Video editor for tech creators',
+  description = 'Long-form talking head, motion graphics and drone edits for consumer tech channels.',
+} = Astro.props;
+
+// TODO: replace with your real details
+const EMAIL = 'you@example.com';
+const CHANNEL = 'https://www.youtube.com/@4t7k-t7';
+
+const videos = await getVideos();
+const navItems = categories.filter((c) => inCategory(videos, c.key).length > 0);
+const home = url('/');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="wrap nav" aria-label="Main">
+        <a class="brand" href={home}>Tanishq Homkar</a>
+        <ul>
+          {navItems.map((c) => <li><a href={`${home}#${c.key}`}>{c.label}</a></li>)}
+          <li><a href={`${home}#contact`}>Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main><slot /></main>
+
+    <footer class="contact" id="contact">
+      <div class="wrap">
+        <h2>Have a video to edit?</h2>
+        <p>Tell me about the channel, the format and your usual turnaround. I'll reply within a day.</p>
+        <div class="actions">
+          <a class="btn primary" href={`mailto:${EMAIL}`}>Email me</a>
+          <a class="btn" href={CHANNEL} rel="noopener">My YouTube channel</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import VideoCard from '../components/VideoCard.astro';
+import { categories, getVideos, inCategory, url } from '../lib/videos';
+
+export async function getStaticPaths() {
+  const videos = await getVideos();
+  return categories
+    .map((c) => ({ c, items: inCategory(videos, c.key) }))
+    .filter(({ items }) => items.length > 0)
+    .map(({ c, items }) => ({
+      params: { category: c.key },
+      props: { label: c.label, items },
+    }));
+}
+
+const { label, items } = Astro.props;
+---
+<Base title={`${label} | Tanishq Homkar`}>
+  <section class="wrap page-head">
+    <a class="back" href={url('/')}>Back to all work</a>
+    <h1>{label}</h1>
+    <p class="count">{items.length} {items.length === 1 ? 'video' : 'videos'}</p>
+  </section>
+  <section class="wrap">
+    <div class="grid">
+      {items.map((v) => <VideoCard video={v} />)}
+    </div>
+  </section>
+</Base>

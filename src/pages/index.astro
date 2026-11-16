@@ -1,37 +1,41 @@
 ---
-import { getCollection, render } from 'astro:content';
-const videos = await getCollection('videos');
-const featured = videos.filter(v => v.data.featured).slice(0, 3);
+import Base from '../layouts/Base.astro';
+import VideoCard from '../components/VideoCard.astro';
+import { categories, getVideos, inCategory, featuredFirst, FEATURED_COUNT, url } from '../lib/videos'
 
-const categories = [
-  { key: 'talking-head', label: 'Talking head' },
-  { key: 'motion-graphics', label: 'Motion graphics' },
-  { key: 'drone', label: 'Drone' },
-];
+const videos = await getVideos();
+const sections = categories
+  .map((c) => {
+    const items = inCategory(videos, c.key);
+    return { ...c, total: items.length, shown: featuredFirst(items) };
+  })
+  .filter((s) => s.total > 0); // hide empty sections
 ---
-<h1>Hire Me</h1>
+<Base>
+  <section class="wrap hero">
+    <h1>Long-form tech videos, edited to hold attention.</h1>
+    <p>
+      I edit talking-head videos for consumer tech channels: tight pacing, custom 3D backgrounds,
+      motion graphics and sound design, cut in DaVinci Resolve. I've been making tech videos
+      myself for four years, so I know what a channel needs from its editor.
+    </p>
+    <div class="actions">
+      {sections[0] && <a class="btn primary" href={`#${sections[0].key}`}>See the work</a>}
+      <a class="btn" href="#contact">Get in touch</a>
+    </div>
+  </section>
 
-{categories.map(async (cat) => {
-  const items = videos.filter(v => v.data.categories.includes(cat.key));
-  if (items.length < 1) return null; // hide thin sections
-  return (
-    <section>
-      <h2>{cat.label}</h2>
-      {items.map(async (v) => {
-        const { Content } = await render(v);
-        return (
-          <div>
-            <h3>{v.data.title}</h3>
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${v.data.youtubeId}`}
-              loading="lazy" allowfullscreen width="640" height="360"></iframe>
-            <details>
-              <summary>How I edited this</summary>
-              <Content />
-            </details>
-          </div>
-        );
-      })}
+  {sections.map((s) => (
+    <section class="wrap work-section" id={s.key}>
+      <h2>{s.label}</h2>
+      <div class="rail">
+        {s.shown.map((v) => <VideoCard video={v} />)}
+      </div>
+      {s.total > FEATURED_COUNT && (
+        <a class="btn more" href={url(`/work/${s.key}/`)}>
+          Load more {s.label.toLowerCase()} ({s.total} total)
+        </a>
+      )}
     </section>
-  );
-})}
+  ))}
+</Base>

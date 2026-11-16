@@ -1,0 +1,39 @@
+---
+import { render } from 'astro:content';
+import type { Video } from '../lib/videos';
+
+interface Props { video: Video }
+const { video } = Astro.props;
+const { Content } = await render(video);
+const { title, youtubeId, tools } = video.data;
+---
+<article class="card">
+  <div class="frame">
+    <!-- Thumbnail only. The real YouTube player loads on click, so the page stays fast. -->
+    <button class="facade" type="button" data-id={youtubeId} data-title={title} aria-label={`Play: ${title}`}>
+      <img src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`} alt="" loading="lazy" width="480" height="360" />
+      <span class="play" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <h3>{title}</h3>
+  {tools.length > 0 && <ul class="tools">{tools.map((t) => <li>{t}</li>)}</ul>}
+
+  <details>
+    <summary>How I edited this</summary>
+    <div class="prose"><Content /></div>
+  </details>
+</article>
+
+<script>
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.facade');
+    if (!btn) return;
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.id}?autoplay=1&rel=0`;
+    iframe.title = btn.dataset.title ?? 'Video';
+    iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    iframe.allowFullscreen = true;
+    btn.replaceWith(iframe);
+  });
+</script>
