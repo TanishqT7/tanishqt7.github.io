@@ -2,8 +2,12 @@
 title: "EvoFox Phantom Air Review"
 youtubeId: "nJe0C1vGKVQ"
 categories: ["talking-head", "motion-graphics"]
-featured: true
-tools: ["DaVinci Resolve", "Blender"]
+edits: ["Compositing", "Cuts and pacing", "Color correction"]
+# Home page slot per category (1 = first). Delete a line to keep it off the home page.
+homepage:
+#   talking-head: 1
+  motion-graphics: 1
+# date: 2026-01-15
 ---
 **Goal:** Share a review of the EvoFox Phantom Air.
 

@@ -1,16 +1,13 @@
 ---
 import '../styles/global.css';
 import { categories, getVideos, inCategory, url } from '../lib/videos';
+import { NAME, CHANNEL_NAME, CHANNEL_URL, EMAIL } from '../lib/site';
 
 interface Props { title?: string; description?: string }
 const {
-  title = 'Tanishq Homkar | Video editor for tech creators',
+  title = `${NAME} | Video editor for tech creators`,
   description = 'Long-form talking head, motion graphics and drone edits for consumer tech channels.',
 } = Astro.props;
-
-// TODO: replace with your real details
-const EMAIL = 'tanishqhomkart7@gmail.com';
-const CHANNEL = 'https://www.youtube.com/@4t7k-t7';
 
 const videos = await getVideos();
 const navItems = categories.filter((c) => inCategory(videos, c.key).length > 0);
@@ -31,24 +28,27 @@ const home = url('/');
   <body>
     <header class="wrap masthead">
       <div class="id">
-        <strong>Tanishq Homkar</strong>
+        <strong>{NAME}</strong>
         <span>Video editor</span>
       </div>
       <!-- Put your photo at public/profile.jpg (square, at least 300x300) -->
       <a class="avatar" href={home} aria-label="Home">
-        <img src={url('/profile.jpg')} alt="Tanishq Homkar" width="176" height="176" />
+        <img src={url('/profile.jpg')} alt={NAME} width="176" height="176" />
       </a>
-      <a class="id end" href={CHANNEL} rel="noopener" aria-label="4T7K on YouTube">
-        <strong>4T7K</strong>
+      <a class="id end" href={CHANNEL_URL} rel="noopener" aria-label={`${CHANNEL_NAME} on YouTube`}>
+        <strong>{CHANNEL_NAME}</strong>
         <span>YouTube channel</span>
       </a>
     </header>
 
-    <nav class="catnav" aria-label="Sections">
+    <!-- The timeline ruler: section links sit on it, and the red playhead tracks your scroll -->
+    <nav class="ruler" aria-label="Sections">
       <ul>
         {navItems.map((c) => <li><a href={`${home}#${c.key}`}>{c.label}</a></li>)}
         <li><a href={`${home}#contact`}>Contact</a></li>
       </ul>
+      <span class="playhead" aria-hidden="true"></span>
+      <span class="tc" aria-hidden="true">00:00:00:00</span>
     </nav>
 
     <main><slot /></main>
@@ -59,9 +59,39 @@ const home = url('/');
         <p>Tell me about the channel, the format and your usual turnaround. I'll reply within a day.</p>
         <div class="actions">
           <a class="btn primary" href={`mailto:${EMAIL}`}>Email me</a>
-          <a class="btn" href={CHANNEL} rel="noopener">My YouTube channel</a>
+          <a class="btn" href={CHANNEL_URL} rel="noopener">My YouTube channel</a>
         </div>
       </div>
     </footer>
+
+    <script>
+      // Playhead: scroll progress becomes position on the ruler plus a timecode (24 fps, 3 minute "timeline").
+      const ruler = document.querySelector<HTMLElement>('.ruler');
+      const tc = document.querySelector<HTMLElement>('.tc');
+      const FPS = 60;
+      const TOTAL_SECONDS = 420;
+      const pad = (n: number) => String(n).padStart(2, '0');
+
+      function update() {
+        if (!ruler) return;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+        ruler.style.setProperty('--p', p.toFixed(4));
+        if (tc) {
+          const frames = Math.round(p * TOTAL_SECONDS * FPS);
+          const s = Math.floor(frames / FPS);
+          tc.textContent = `00:${pad(Math.floor(s / 60))}:${pad(s % 60)}:${pad(frames % FPS)}`;
+        }
+      }
+
+      let queued = false;
+      window.addEventListener('scroll', () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => { queued = false; update(); });
+      }, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    </script>
   </body>
 </html>

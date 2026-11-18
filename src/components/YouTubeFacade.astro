@@ -1,0 +1,22 @@
+---
+// Thumbnail with a play button. The real YouTube player only loads on click.
+interface Props { id: string; title: string; thumb?: 'hqdefault' | 'maxresdefault'; eager?: boolean }
+const { id, title, thumb = 'hqdefault', eager = false } = Astro.props;
+---
+<button class="facade" type="button" data-id={id} data-title={title} aria-label={`Play: ${title}`}>
+  <img src={`https://i.ytimg.com/vi/${id}/${thumb}.jpg`} alt="" loading={eager ? 'eager' : 'lazy'} />
+  <span class="play" aria-hidden="true"></span>
+</button>
+
+<script>
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.facade');
+    if (!btn) return;
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.id}?autoplay=1&rel=0`;
+    iframe.title = btn.dataset.title ?? 'Video';
+    iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    iframe.allowFullscreen = true;
+    btn.replaceWith(iframe);
+  });
+</script>

@@ -1,7 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import VideoCard from '../../components/VideoCard.astro';
-import { categories, getVideos, inCategory, url } from '../../lib/videos';
+import { categories, getVideos, inCategory, seeAllOrder, url } from '../../lib/videos';
+import { NAME } from '../../lib/site';
 
 export async function getStaticPaths() {
   const videos = await getVideos();
@@ -10,19 +11,22 @@ export async function getStaticPaths() {
     .filter(({ items }) => items.length > 0)
     .map(({ c, items }) => ({
       params: { category: c.key },
-      props: { label: c.label, items },
+      props: { label: c.label, color: c.color, items: seeAllOrder(items, c.key) },
     }));
 }
 
-const { label, items } = Astro.props;
+const { label, color, items } = Astro.props;
 ---
-<Base title={`${label} | Tanishq Homkar`}>
-  <section class="wrap page-head">
+<Base title={`${label} | ${NAME}`}>
+  <section class="wrap page-head" style={`--track:${color}`}>
     <a class="back" href={url('/')}>Back to all work</a>
-    <h1>{label}</h1>
-    <p class="count">{items.length} {items.length === 1 ? 'video' : 'videos'}</p>
+    <div class="track-head row">
+      <span class="track-id">{label.slice(0, 2).toUpperCase()}</span>
+      <h1>{label}</h1>
+      <p class="count">{items.length} {items.length === 1 ? 'video' : 'videos'}</p>
+    </div>
   </section>
-  <section class="wrap">
+  <section class="wrap" style={`--track:${color}`}>
     <div class="grid">
       {items.map((v) => <VideoCard video={v} />)}
     </div>

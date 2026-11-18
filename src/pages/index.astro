@@ -1,41 +1,59 @@
 ---
 import Base from '../layouts/Base.astro';
 import VideoCard from '../components/VideoCard.astro';
-import { categories, getVideos, inCategory, featuredFirst, FEATURED_COUNT, url } from '../lib/videos'
+import YouTubeFacade from '../components/YouTubeFacade.astro';
+import { categories, getVideos, inCategory, homepagePicks, url } from '../lib/videos';
+import { SHOWREEL_ID } from '../lib/site';
 
 const videos = await getVideos();
-const sections = categories
+const tracks = categories
   .map((c) => {
     const items = inCategory(videos, c.key);
-    return { ...c, total: items.length, shown: featuredFirst(items) };
+    return { ...c, total: items.length, shown: homepagePicks(items, c.key) };
   })
-  .filter((s) => s.total > 0); // hide empty sections
+  .filter((t) => t.total > 0); // hide empty sections
+
+const showReel = Boolean(SHOWREEL_ID) || import.meta.env.DEV;
 ---
 <Base>
-  <section class="wrap hero">
+  <section class="wrap intro">
     <h1>Long-form tech videos, edited to hold attention.</h1>
     <p>
-      I edit talking-head videos for consumer tech channels: tight pacing, custom 3D backgrounds,
-      motion graphics and sound design, cut in DaVinci Resolve. I've been making tech videos
-      myself for four years, so I know what a channel needs from its editor.
+      Talking-head edits for consumer tech channels: tight pacing, custom 3D backgrounds,
+      motion graphics and sound design. Four years of making my own tech videos behind it.
     </p>
-    <div class="actions">
-      {sections[0] && <a class="btn primary" href={`#${sections[0].key}`}>See the work</a>}
-      <a class="btn" href="#contact">Get in touch</a>
-    </div>
   </section>
 
-  {sections.map((s) => (
-    <section class="wrap work-section" id={s.key}>
-      <h2>{s.label}</h2>
-      <div class="rail">
-        {s.shown.map((v) => <VideoCard video={v} />)}
+  {showReel && (
+    <section class="monitor" aria-labelledby="reel-heading">
+      <h2 id="reel-heading" class="visually-hidden">Showreel</h2>
+      <div class="frame">
+        {SHOWREEL_ID
+          ? <YouTubeFacade id={SHOWREEL_ID} title="Showreel" thumb="maxresdefault" eager />
+          : <p class="placeholder">Showreel goes here. Set SHOWREEL_ID in src/lib/site.ts</p>}
       </div>
-      {s.total > FEATURED_COUNT && (
-        <a class="btn more" href={url(`/work/${s.key}/`)}>
-          Load more {s.label.toLowerCase()} ({s.total} total)
-        </a>
-      )}
     </section>
-  ))}
+  )}
+
+  <div class="wrap tracks">
+    {tracks.map((t, i) => (
+      <section class="track" id={t.key} style={`--track:${t.color}`}>
+        <div class="track-head">
+          <span class="track-id">V{i + 1}</span>
+          <h2>{t.label}</h2>
+          <p class="count">{t.total} {t.total === 1 ? 'video' : 'videos'}</p>
+        </div>
+        <div class="track-body">
+          <div class="rail">
+            {t.shown.map((v) => <VideoCard video={v} />)}
+          </div>
+          {t.total > t.shown.length && (
+            <a class="btn more" href={url(`/work/${t.key}/`)}>
+              Load more {t.label.toLowerCase()} ({t.total} total)
+            </a>
+          )}
+        </div>
+      </section>
+    ))}
+  </div>
 </Base>
