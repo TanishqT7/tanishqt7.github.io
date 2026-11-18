@@ -2,7 +2,7 @@
 title: "8BitDo Ultimate 2C Wireless Controller Unboxing and First Impressions"
 youtubeId: "NtpO4eUoTEU"
 categories: ["talking-head", "motion-graphics"]
-edits: ["Compositing", "Cuts and pacing", "Color correction"]
+edits: ['Cuts and pacing', 'Green screen', 'B-roll', 'Motion graphics', 'Sound design']
 # Home page slot per category (1 = first). Delete a line to keep it off the home page.
 homepage:
   talking-head: 3

@@ -2,7 +2,7 @@
 title: "EvoFox Phantom Air Review"
 youtubeId: "nJe0C1vGKVQ"
 categories: ["talking-head", "motion-graphics"]
-edits: ["Compositing", "Cuts and pacing", "Color correction"]
+edits: ['Cuts and pacing', 'Green screen', 'Text animation', 'B-roll', 'Motion graphics', 'Sound design']
 # Home page slot per category (1 = first). Delete a line to keep it off the home page.
 homepage:
 #   talking-head: 1

@@ -2,7 +2,7 @@
 title: "Moto G37 Power: Past Experience with Present Experience"
 youtubeId: "yA1mLTNlKs4"
 categories: ["talking-head", "motion-graphics"]
-edits: ["Compositing", "Cuts and pacing", "Color correction"]
+edits: ['Cuts and pacing', 'Green screen', 'B-roll', 'Motion graphics', 'Sound design']
 # Home page slot per category (1 = first). Delete a line to keep it off the home page.
 homepage:
   talking-head: 1

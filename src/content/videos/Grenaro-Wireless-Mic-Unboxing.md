@@ -2,7 +2,7 @@
 title: "Grenaro Invisible Wireless Mic Unboxing and First Impressions"
 youtubeId: "pF5aM6Cn520"
 categories: ["talking-head", "motion-graphics"]
-edits: ["Compositing", "Cuts and pacing", "Color correction"]
+edits: ['Cuts and pacing', 'Green screen', 'B-roll', 'Motion graphics', 'Sound design']
 # Home page slot per category (1 = first). Delete a line to keep it off the home page.
 homepage:
   talking-head: 2
