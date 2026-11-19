@@ -5,6 +5,8 @@ export const categories = [
   { key: 'talking-head', label: 'Talking head', color: '#6aa0e8' },
   { key: 'motion-graphics', label: 'Motion graphics', color: '#b58cf0' },
   { key: 'drone', label: 'Drone', color: '#58c29b' },
+  { key: 'skit', label: 'Skit', color: '#f176e7' },
+  { key: 'slideshow', label: 'Slideshow', color: '#e9f176' },
 ] as const;
 
 export type CategoryKey = (typeof categories)[number]['key'];
@@ -21,4 +23,7 @@ export const EDIT_TYPES = [
   'Motion graphics',
   'Sound design',
   'Compositing',
+  'Drone',
+  'Transitions',
+  'Tracking',
 ] as const;
