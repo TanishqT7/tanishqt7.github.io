@@ -9,19 +9,19 @@ export async function getStaticPaths() {
   return categories
     .map((c) => ({ c, items: inCategory(videos, c.key) }))
     .filter(({ items }) => items.length > 0)
-    .map(({ c, items }) => ({
+    .map(({ c, items }, i) => ({
       params: { category: c.key },
-      props: { label: c.label, color: c.color, items: seeAllOrder(items, c.key) },
+      props: { label: c.label, color: c.color, trackNo: i + 1, items: seeAllOrder(items, c.key) },
     }));
 }
 
-const { label, color, items } = Astro.props;
+const { label, color, trackNo, items } = Astro.props;
 ---
 <Base title={`${label} | ${NAME}`}>
   <section class="wrap page-head" style={`--track:${color}`}>
     <a class="back" href={url('/')}>Back to all work</a>
     <div class="track-head row">
-      <span class="track-id">{label.slice(0, 2).toUpperCase()}</span>
+      <span class="track-id">V{trackNo}</span>
       <h1>{label}</h1>
       <p class="count">{items.length} {items.length === 1 ? 'video' : 'videos'}</p>
     </div>

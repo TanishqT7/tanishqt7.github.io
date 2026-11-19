@@ -44,7 +44,7 @@ const home = url('/');
     <!-- The timeline ruler: section links sit on it, and the red playhead tracks your scroll -->
     <nav class="ruler" aria-label="Sections">
       <ul>
-        {navItems.map((c) => <li><a href={`${home}#${c.key}`}>{c.label}</a></li>)}
+        {navItems.map((c) => <li><a href={`${home}#${c.key}`} style={`--c:${c.color}`}>{c.label}</a></li>)}
         <li><a href={`${home}#contact`}>Contact</a></li>
       </ul>
       <span class="playhead" aria-hidden="true"></span>
@@ -65,23 +65,51 @@ const home = url('/');
     </footer>
 
     <script>
-      // Playhead: scroll progress becomes position on the ruler plus a timecode (24 fps, 3 minute "timeline").
+      // Playhead: scroll progress becomes position on the ruler plus a timecode (60 fps, 7 minute "timeline").
+      // The ruler link for the section you're in is highlighted, and scrolled into view on narrow screens.
       const ruler = document.querySelector<HTMLElement>('.ruler');
       const tc = document.querySelector<HTMLElement>('.tc');
+      const list = ruler?.querySelector<HTMLElement>('ul');
       const FPS = 60;
       const TOTAL_SECONDS = 420;
       const pad = (n: number) => String(n).padStart(2, '0');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Ruler links that point at a section on this page
+      const items = [...document.querySelectorAll<HTMLAnchorElement>('.ruler a')]
+        .map((a) => ({ a, target: document.getElementById(a.hash.slice(1)) }))
+        .filter((i): i is { a: HTMLAnchorElement; target: HTMLElement } => i.target !== null);
+      let activeLink: HTMLAnchorElement | null = null;
+
+      function updateActive() {
+        const line = window.innerHeight * 0.35;
+        let current: HTMLAnchorElement | null = null;
+        for (const { a, target } of items) {
+          if (target.getBoundingClientRect().top <= line) current = a;
+        }
+        if (current === activeLink) return;
+        activeLink?.removeAttribute('aria-current');
+        current?.setAttribute('aria-current', 'location');
+        activeLink = current;
+        if (current && list && list.scrollWidth > list.clientWidth) {
+          const x = current.getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft;
+          list.scrollTo({ left: x - (list.clientWidth - current.offsetWidth) / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
+        }
+      }
 
       function update() {
         if (!ruler) return;
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+        const max = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        // Browsers often stop a pixel or two short of the true bottom (fractional scroll positions),
+        // so anything within 2px of the end counts as the end.
+        const p = max <= 0 ? 0 : max - window.scrollY <= 2 ? 1 : Math.min(1, Math.max(0, window.scrollY / max));
         ruler.style.setProperty('--p', p.toFixed(4));
         if (tc) {
           const frames = Math.round(p * TOTAL_SECONDS * FPS);
           const s = Math.floor(frames / FPS);
           tc.textContent = `00:${pad(Math.floor(s / 60))}:${pad(s % 60)}:${pad(frames % FPS)}`;
         }
+        updateActive();
       }
 
       let queued = false;
