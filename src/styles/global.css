@@ -103,6 +103,7 @@ a.id:hover strong { color: var(--accent); }
 
 /* Intro and showreel */
 .intro { padding-block: clamp(2rem, 6vw, 4rem) 0; text-align: center; }
+.intro .services { justify-content: center; margin: 1.5rem auto 0; max-width: 92ch; }
 .intro h1 {
   font-size: clamp(1.75rem, 4.5vw, 3rem); line-height: 1.1; letter-spacing: -.025em; font-weight: 700;
   margin: 0 auto .75rem; max-width: 22ch;

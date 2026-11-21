@@ -5,8 +5,8 @@ import { NAME, CHANNEL_NAME, CHANNEL_URL, EMAIL } from '../lib/site';
 
 interface Props { title?: string; description?: string }
 const {
-  title = `${NAME} | Video editor for tech creators`,
-  description = 'Long-form talking head, motion graphics and drone edits for consumer tech channels.',
+  title = `${NAME} | Freelance Video Editor`,
+  description = 'Freelance video editor with 4+ years of experience in long-form content. Cuts and pacing, color grading, VFX, sound design and motion graphics for creators and brands.',
 } = Astro.props;
 
 const videos = await getVideos();
@@ -29,7 +29,7 @@ const home = url('/');
     <header class="wrap masthead">
       <div class="id">
         <strong>{NAME}</strong>
-        <span>Video editor</span>
+        <span>Freelance Video editor</span>
       </div>
       <!-- Put your photo at public/profile.jpg (square, at least 300x300) -->
       <a class="avatar" href={home} aria-label="Home">
@@ -37,7 +37,7 @@ const home = url('/');
       </a>
       <a class="id end" href={CHANNEL_URL} rel="noopener" aria-label={`${CHANNEL_NAME} on YouTube`}>
         <strong>{CHANNEL_NAME}</strong>
-        <span>YouTube channel</span>
+        <span>My own channel</span>
       </a>
     </header>
 
@@ -55,11 +55,14 @@ const home = url('/');
 
     <footer class="contact" id="contact">
       <div class="wrap">
-        <h2>Have a video to edit?</h2>
-        <p>Tell me about the channel, the format and your usual turnaround. I'll reply within a day.</p>
+        <h2>Let's edit your next video.</h2>
+        <p>
+          Send me a sample of your content, the format, and your deadline.
+          I reply within a day.
+        </p>
         <div class="actions">
-          <a class="btn primary" href={`mailto:${EMAIL}`}>Email me</a>
-          <a class="btn" href={CHANNEL_URL} rel="noopener">My YouTube channel</a>
+          <a class="btn primary" href={`mailto:${EMAIL}?subject=${encodeURIComponent('Video editing enquiry')}`}>Email me</a>
+          <a class="btn" href={CHANNEL_URL} rel="noopener">Watch my own videos</a>
         </div>
       </div>
     </footer>
