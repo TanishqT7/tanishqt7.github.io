@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import VideoCard from '../components/VideoCard.astro';
 import YouTubeFacade from '../components/YouTubeFacade.astro';
 import { categories, getVideos, inCategory, homepagePicks, url } from '../lib/videos';
-import { SHOWREEL_ID } from '../lib/site';
+import { SHOWREEL_ID, SHOWREEL_PLACEHOLDER } from '../lib/site';
 
 const videos = await getVideos();
 const tracks = categories
@@ -13,7 +13,7 @@ const tracks = categories
   })
   .filter((t) => t.total > 0); // hide empty sections
 
-const showReel = Boolean(SHOWREEL_ID) || import.meta.env.DEV;
+const showReel = Boolean(SHOWREEL_ID) || Boolean(SHOWREEL_PLACEHOLDER) || import.meta.env.DEV;
 ---
 <Base>
   <section class="wrap intro">
@@ -30,7 +30,9 @@ const showReel = Boolean(SHOWREEL_ID) || import.meta.env.DEV;
       <div class="frame">
         {SHOWREEL_ID
           ? <YouTubeFacade id={SHOWREEL_ID} title="Showreel" thumb="maxresdefault" eager />
-          : <p class="placeholder">Showreel goes here. Set SHOWREEL_ID in src/lib/site.ts</p>}
+          : SHOWREEL_PLACEHOLDER
+            ? <img class="under-construction" src={url(`/${SHOWREEL_PLACEHOLDER}`)} alt="Showreel under construction" />
+            : <p class="placeholder">Showreel goes here. Set SHOWREEL_ID in src/lib/site.ts</p>}
       </div>
     </section>
   )}

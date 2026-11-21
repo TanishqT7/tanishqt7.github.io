@@ -112,6 +112,7 @@ a.id:hover strong { color: var(--accent); }
 .monitor .frame { border: 1px solid var(--line); border-radius: .5rem; box-shadow: 0 24px 60px rgba(0, 0, 0, .45); }
 .monitor .play { width: 5rem; height: 5rem; }
 .monitor .play::after { border-width: .9rem 0 .9rem 1.45rem; }
+.monitor img.under-construction { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .placeholder { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 1rem; text-align: center; color: var(--muted); }
 
 .actions { display: flex; gap: .75rem; flex-wrap: wrap; }
